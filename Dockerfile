@@ -9,7 +9,9 @@ RUN pip install --upgrade jupyter
 RUN pip install --upgrade scipy
 RUN pip install --upgrade matplotlib
 RUN pip install --upgrade seaborn
+RUN pip install --upgrade Pillow
 RUN pip install --upgrade pandas
+RUN pip install --upgrade pandas-gbq
 RUN pip install --upgrade scikit-learn
 RUN pip install --upgrade tensorflow
 RUN pip install --upgrade google-cloud-vision
@@ -25,7 +27,7 @@ RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.10.0/tini 
     chmod +x /usr/local/bin/tini
 
 ENV SHELL /bin/bash
-ENV NB_USER jovyan
+ENV NB_USER gcpuser
 ENV NB_UID 1000
 ENV HOME /home/$NB_USER
 
@@ -45,6 +47,8 @@ COPY start-notebook.sh /usr/local/bin/
 COPY start-singleuser.sh /usr/local/bin/
 COPY jupyter_notebook_config.py /etc/jupyter/
 RUN chown -R $NB_USER:users /etc/jupyter/
+
+ENV CLOUDSDK_CONFIG $HOME/notebook/.config
 
 # Switch back to jovyan to avoid accidental container runs as root
 USER $NB_USER
